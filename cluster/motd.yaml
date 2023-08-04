@@ -4,9 +4,15 @@ metadata:
   name: motd-deployment
   namespace: goloroden
 spec:
+  replicas: 3
   selector:
     matchLabels:
       application: motd
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -15,9 +21,31 @@ spec:
       containers:
       - name: motd-container
         image: goloroden/motd
+        env:
+        - name: PORT
+          value: "4000"
         ports:
         - name: http
-          containerPort: 3000
+          containerPort: 4000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 15
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+      # imagePullSecret:
+      # - name: docker-hub
 ---
 kind: Service
 apiVersion: v1
@@ -25,10 +53,28 @@ metadata:
   name: motd-service
   namespace: goloroden
 spec:
-  type: NodePort
   selector:
     application: motd
   ports:
   - name: http
     port: 80
     targetPort: http
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: motd-ingress
+  namespace: goloroden
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: goloroden.m-f.thenativeweb.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: motd-service
+            port:
+              name: http

@@ -206,3 +206,11 @@ $ kubectl apply -f <manifest>
 ```shell
 $ kubectl delete -f <manifest>
 ```
+
+## Nginx als Ingress Controller installieren
+
+```shell
+$ kubectl apply -f \
+    https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.0/deploy/static/provider/do/deploy.yaml
+$ kubectl apply -f nginx-hotfix.yaml
+```
