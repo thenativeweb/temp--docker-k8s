@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:4000"
+    environment:
+      - PORT=4000
+    init: true
+    restart: always
+    networks:
+      - test
+
+  ui:
+    image: nginx:${NGINX_VERSION}
+    ports:
+      - "4000:80"
+    volumes:
+      - ../website:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+    networks:
+      - test
+
+networks:
+  test:
+    driver: bridge
