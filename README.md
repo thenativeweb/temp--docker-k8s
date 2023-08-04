@@ -168,3 +168,41 @@ $ docker-compose ps
 ```shell
 $ docker network ls
 ```
+
+# Kubernetes
+
+## Worker-Nodes auflisten
+
+```shell
+$ kubectl get nodes [-o wide]
+```
+
+## Namespace anlegen
+
+```shell
+$ kubectl create namespace <name>
+```
+
+## Namespace auflisten
+
+```shell
+$ kubectl get namespaces
+```
+
+## Namespace löschen
+
+```shell
+$ kubectl delete namespace <name>
+```
+
+## Manifest anwenden (erzeugen oder ändern)
+
+```shell
+$ kubectl apply -f <manifest>
+```
+
+## Manifest löschen
+
+```shell
+$ kubectl delete -f <manifest>
+```
